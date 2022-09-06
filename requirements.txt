@@ -1,8 +1,12 @@
 asgiref==3.5.2
-Django==3.2.13
-Pillow==9.1.1
+backports.zoneinfo==0.2.1
+Django==3.2.15
+gunicorn==20.1.0
+Pillow==9.2.0
+psycopg==3.1.1
 psycopg2==2.9.3
-pytz==2022.1
+pytz==2022.2.1
 sqlparse==0.4.2
-typing_extensions==4.2.0
+typing_extensions==4.3.0
+tzdata==2022.2
 whitenoise==6.2.0
