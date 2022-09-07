@@ -3,7 +3,7 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-wujj%etk&@+ndjm5y+vaop!^*b#wro^5*omyhgqabzynt3a1d_'
+SECRET_KEY = os.getenv('SECRET_KEY')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 APP_ENVIRONMENT = os.getenv('APP_ENVIRONMENT')
@@ -59,46 +59,45 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'petstagram.wsgi.application'
 
-DATABASES=None
+DEFAULT_DATABASE_CONFIG = {
+    'ENGINE': 'django.db.backends.postgresql',
+    'NAME': 'petstagram_db',
+    'USER': 'postgres',
+    'PASSWORD': '1123QwER',
+    'HOST': '127.0.0.1',
+    'PORT': '5432',
+}
 
-if APP_ENVIRONMENT=='Production':
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'davacj8qebblj4',
-            'USER': 'mrjeyiylycnpgo',
-            'PASSWORD': 'da6e003f96ba73758ba6049cf1840a9b7ef7f256a4ae3b84612a34e3bc534f75',
-            'HOST': 'ec2-54-246-185-161.eu-west-1.compute.amazonaws.com',
-            'PORT': '5432',
-        }
-    }
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'petstagram_db',
-            'USER': 'postgres',
-            'PASSWORD': '1123QwER',
-            'HOST': '127.0.0.1',
-            'PORT': '5432',
-        }
+if APP_ENVIRONMENT == 'Production':
+    DEFAULT_DATABASE_CONFIG = {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('DB_USER'),
+        'PASSWORD': os.getenv('DB_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT', '5432'),
     }
 
+DATABASES = {
+    'default': DEFAULT_DATABASE_CONFIG,
+}
+AUTH_PASSWORD_VALIDATORS = []
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+if APP_ENVIRONMENT == 'Production':
+    AUTH_PASSWORD_VALIDATORS = [
+        {
+            'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+        },
+        {
+            'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+        },
+    ]
 
 LANGUAGE_CODE = 'en-us'
 
@@ -120,21 +119,29 @@ MEDIA_URL = 'media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# LOGGING = {
-#     'version': 1,
-#     'handlers': {
-#         'console': {
-#             'level': 'DEBUG',
-#             'filters': [],
-#             'class': 'logging.StreamHandler',
-#         }
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'level': 'DEBUG',
-#             'handlers': ['console'],
-#         }
-#     }
-# }
+if APP_ENVIRONMENT == 'Production':
+    pass
+
+LOGGING_LEVEL = 'DEBUG'
+if APP_ENVIRONMENT == 'Production':
+    LOGGING_LEVEL = 'INFO'
+
+LOGGING = {
+    'version': 1,
+    'handlers': {
+        'console': {
+            # DEBUG, WARNING, INFO, CRITICAL, ERROR
+            'level': LOGGING_LEVEL,
+            'filters': [],
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django.db.backends': {
+            'level': LOGGING_LEVEL,
+            'handlers': ['console'],
+        }
+    }
+}
 
 AUTH_USER_MODEL = 'accounts.PetstagramUser'
