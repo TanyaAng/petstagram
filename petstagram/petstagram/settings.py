@@ -6,12 +6,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-wujj%etk&@+ndjm5y+vaop!^*b#wro^5*omyhgqabzynt3a1d_'
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
+APP_ENVIRONMENT = os.getenv('APP_ENVIRONMENT')
 
-ALLOWED_HOSTS = [
-    'localhost',
-    '127.0.0.1',
-    'petstagram-demo-app.herokuapp.com'
-]
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS').split(' ')
 
 DJANG0_APPS = ('django.contrib.admin',
                'django.contrib.auth',
@@ -62,16 +59,31 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'petstagram.wsgi.application'
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'davacj8qebblj4',
-        'USER': 'mrjeyiylycnpgo',
-        'PASSWORD': 'da6e003f96ba73758ba6049cf1840a9b7ef7f256a4ae3b84612a34e3bc534f75',
-        'HOST': 'ec2-54-246-185-161.eu-west-1.compute.amazonaws.com',
-        'PORT': '5432',
+DATABASES=None
+
+if APP_ENVIRONMENT=='Production':
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'davacj8qebblj4',
+            'USER': 'mrjeyiylycnpgo',
+            'PASSWORD': 'da6e003f96ba73758ba6049cf1840a9b7ef7f256a4ae3b84612a34e3bc534f75',
+            'HOST': 'ec2-54-246-185-161.eu-west-1.compute.amazonaws.com',
+            'PORT': '5432',
+        }
     }
-}
+else:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'petstagram_db',
+            'USER': 'postgres',
+            'PASSWORD': '1123QwER',
+            'HOST': '127.0.0.1',
+            'PORT': '5432',
+        }
+    }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
